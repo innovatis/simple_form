@@ -267,7 +267,7 @@ module SimpleForm
         else
           if file_method?(attribute_name) 
             :file 
-          elsif corefile_method(attribute_name)
+          elsif corefile_method?(attribute_name)
             :corefile
           else 
             (input_type || :string)
@@ -290,7 +290,7 @@ module SimpleForm
     end
 
     def corefile_method?(attribute_name) #:nodoc:
-      @object.class.respond_to?(:file_methods) && @object.class.file_methods.include?(attribute_name)
+      @object.class.respond_to?(:file_fields) && @object.class.file_fields.include?(attribute_name)
     end
 
     def find_attribute_column(attribute_name) #:nodoc:
