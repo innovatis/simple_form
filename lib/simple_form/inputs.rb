@@ -4,6 +4,7 @@ module SimpleForm
     autoload :BlockInput,      'simple_form/inputs/block_input'
     autoload :BooleanInput,    'simple_form/inputs/boolean_input'
     autoload :CollectionInput, 'simple_form/inputs/collection_input'
+    autoload :CorefileInput,   'simple_form/inputs/corefile_input'
     autoload :DateTimeInput,   'simple_form/inputs/date_time_input'
     autoload :HiddenInput,     'simple_form/inputs/hidden_input'
     autoload :MappingInput,    'simple_form/inputs/mapping_input'

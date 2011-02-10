@@ -265,7 +265,13 @@ module SimpleForm
         when /phone/     then :tel
         when /url/       then :url
         else
-          file_method?(attribute_name) ? :file : (input_type || :string)
+          if file_method?(attribute_name) 
+            :file 
+          elsif corefile_method(attribute_name)
+            :corefile
+          else 
+            (input_type || :string)
+          end 
         end
       else
         input_type
@@ -281,6 +287,10 @@ module SimpleForm
     def file_method?(attribute_name) #:nodoc:
       file = @object.send(attribute_name) if @object.respond_to?(attribute_name)
       file && SimpleForm.file_methods.any? { |m| file.respond_to?(m) }
+    end
+
+    def corefile_method?(attribute_name) #:nodoc:
+      @object.class.respond_to?(:file_methods) && @object.class.file_methods.include?(attribute_name)
     end
 
     def find_attribute_column(attribute_name) #:nodoc:
