@@ -10,7 +10,7 @@ module SimpleForm
     map_type :integer, :decimal, :float,           :to => SimpleForm::Inputs::NumericInput
     map_type :select, :radio, :check_boxes,        :to => SimpleForm::Inputs::CollectionInput
     map_type :date, :time, :datetime,              :to => SimpleForm::Inputs::DateTimeInput
-    map_type :country, :time_zone,                 :to => SimpleForm::Inputs::PriorityInput
+    map_type :country, :time_zone, :province,      :to => SimpleForm::Inputs::PriorityInput
     map_type :boolean,                             :to => SimpleForm::Inputs::BooleanInput
 
     # Basic input helper, combines all components in the stack to generate
@@ -264,6 +264,7 @@ module SimpleForm
         when /email/     then :email
         when /phone/     then :tel
         when /url/       then :url
+        when /province/  then :province
         else
           if file_method?(attribute_name) 
             :file 
