@@ -267,8 +267,8 @@ module SimpleForm
         else
           if file_method?(attribute_name) 
             :file 
-          elsif corefile_method?(attribute_name)
-            :corefile
+          elsif dms_file_method?(attribute_name)
+            :dms_file
           else 
             (input_type || :string)
           end 
@@ -289,7 +289,7 @@ module SimpleForm
       file && SimpleForm.file_methods.any? { |m| file.respond_to?(m) }
     end
 
-    def corefile_method?(attribute_name) #:nodoc:
+    def dms_file_method?(attribute_name) #:nodoc:
       @object.class.respond_to?(:file_fields) && @object.class.file_fields.include?(attribute_name)
     end
 
