@@ -1,6 +1,6 @@
 module SimpleForm
   module Inputs
-    class CorefileInput < Base
+    class DmsFileInput < Base
 
       def input
         @builder.hidden_field(attribute_name, input_html_options)
