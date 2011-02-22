@@ -15,7 +15,7 @@ module SimpleForm
       def file_upload
         genid = (rand 2**32).to_s(16)
 
-        scope = "#{object.class.name.underscore}[#{atrribute_name}_attributes]"
+        scope = "#{object.class.name.underscore}[#{attribute_name}_attributes]"
         lis = object.send(attribute_name).map do |obj|
           <<-HTML.html_safe
             <li>
