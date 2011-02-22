@@ -105,6 +105,9 @@ module SimpleForm
   mattr_accessor :country_priority
   @@country_priority = nil
 
+  mattr_accessor :province_priority
+  @@province_priority
+
   # Maximum size allowed for inputs.
   mattr_accessor :default_input_size
   @@default_input_size = 50
