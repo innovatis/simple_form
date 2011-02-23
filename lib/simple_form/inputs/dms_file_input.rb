@@ -8,25 +8,34 @@ module SimpleForm
 
       protected
 
+      def input_html_classes
+        if object.class.reflect_on_association(attribute_name).try(:macro) == :has_many
+          super + [:multiple]
+        else 
+          super
+        end 
+      end 
+      
+      def is_has_many?
+        object.class.reflect_on_association(attribute_name).try(:macro) == :has_many
+      end 
+      
       def components_list
         super + [:file_upload]
       end 
 
+      AVB = ActionView::Base.new(["#{Rails.root}/app/views"])
+      
       def file_upload
         genid = (rand 2**32).to_s(16)
-
-        scope = "#{object.class.name.underscore}[#{attribute_name}_attributes]"
-        lis = object.send(attribute_name).map do |obj|
-          <<-HTML.html_safe
-            <li>
-              <input name="#{scope}[#{object.id}][_destroy]" type="hidden" value="false" />
-              <input name="#{scope}[#{object.id}][asset_path]" type="hidden" value="#{obj.asset_path}" />
-              #{obj.asset_path}
-            </li>
-          HTML
-        end.join("\n").html_safe
-
-        "<div class='file_upload' id='#{genid}'><ul class='asset_list'>#{lis}</ul></div>".html_safe
+        if object.class.reflect_on_association(attribute_name).try(:macro) == :has_many
+          ul = AVB.render(:partial => (@options[:asset_list_partial] || '/inherited_resources/asset_list'), 
+            :locals => {:object => object, :attribute_name => attribute_name})
+   
+          "<div class='file_upload' id='#{genid}'>#{ul}</div>".html_safe
+        else 
+          "<div class='file_upload' id='#{genid}'></div>".html_safe
+        end 
       end 
       
     end
