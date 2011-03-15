@@ -8,6 +8,12 @@ module SimpleForm
 
       protected
 
+      def input_html_options
+        bucket = object.class.file_fields[attribute_name]
+        raise "bucket identifier not found" if bucket.blank?
+        super.merge('data-bucket' => bucket)
+      end 
+      
       def input_html_classes
         if object.class.reflect_on_association(attribute_name).try(:macro) == :has_many
           super + [:multiple]
