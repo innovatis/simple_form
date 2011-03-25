@@ -10,6 +10,14 @@ module SimpleForm
 
       def input_html_options
         bucket = object.class.file_fields[attribute_name]
+        if bucket.kind_of?(Hash) 
+          if Rails.env.production? 
+            bucket = bucket[:production]
+          else 
+            bucket = bucket[:development]
+          end 
+        end 
+        
         raise "bucket identifier not found" if bucket.blank?
         super.merge('data-bucket' => bucket)
       end 
