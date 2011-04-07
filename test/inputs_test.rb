@@ -126,7 +126,12 @@ class InputTest < ActionView::TestCase
   # StringInput
   test 'input should map text field to string attribute' do
     with_input_for @user, :name, :string
-    assert_select 'input[name=\'user[name]\'][id=user_name][value=New in Simple Form!][type=text]'
+    assert_select "input#user_name[type=text][name='user[name]'][value=New in Simple Form!]"
+  end
+
+  test 'input should generate a password field for password attributes' do
+    with_input_for @user, :password, :password
+    assert_select "input#user_password.password[type=password][name='user[password]']"
   end
 
   test 'input should use default text size for decimal attributes' do
@@ -144,6 +149,16 @@ class InputTest < ActionView::TestCase
     assert_select 'input.string[size=50]'
   end
 
+  test 'input should use default text size for password attributes' do
+    with_input_for @user, :password, :password
+    assert_select 'input.password[type=password][size=50]'
+  end
+
+  test 'input should get maxlength from column definition for password attributes' do
+    with_input_for @user, :password, :password
+    assert_select 'input.password[type=password][maxlength=100]'
+  end
+
   test 'input should not generate placeholder by default' do
     with_input_for @user, :name, :string
     assert_no_select 'input[placeholder]'
@@ -152,6 +167,11 @@ class InputTest < ActionView::TestCase
   test 'input should accept the placeholder option' do
     with_input_for @user, :name, :string, :placeholder => 'Put in some text'
     assert_select 'input.string[placeholder=Put in some text]'
+  end
+
+  test 'input should generate a password field for password attributes that accept placeholder' do
+    with_input_for @user, :password, :password, :placeholder => 'Password Confirmation'
+    assert_select 'input[type=password].password[placeholder=Password Confirmation]#user_password'
   end
 
   test 'input should use i18n to translate placeholder text' do
@@ -204,6 +224,38 @@ class InputTest < ActionView::TestCase
     assert_select 'input[min=18]'
   end
 
+  test 'input should infer min value from integer attributes with greater than validation using symbol' do
+    with_input_for @validating_user, :amount, :float
+    assert_no_select 'input[min]'
+
+    with_input_for @validating_user, :amount, :integer
+    assert_select 'input[min=11]'
+  end
+
+  test 'input should infer min value from integer attributes with greater than or equal to validation using symbol' do
+    with_input_for @validating_user, :attempts, :float
+    assert_select 'input[min=1]'
+
+    with_input_for @validating_user, :attempts, :integer
+    assert_select 'input[min=1]'
+  end
+
+  test 'input should infer min value from integer attributes with greater than validation using proc' do
+    with_input_for @other_validating_user, :amount, :float
+    assert_no_select 'input[min]'
+
+    with_input_for @other_validating_user, :amount, :integer
+    assert_select 'input[min=20]'
+  end
+
+  test 'input should infer min value from integer attributes with greater than or equal to validation using proc' do
+    with_input_for @other_validating_user, :attempts, :float
+    assert_select 'input[min=19]'
+
+    with_input_for @other_validating_user, :attempts, :integer
+    assert_select 'input[min=19]'
+  end
+
   test 'input should infer max value from attributes with less than validation' do
     with_input_for @other_validating_user, :age, :float
     assert_no_select 'input[max]'
@@ -212,9 +264,41 @@ class InputTest < ActionView::TestCase
     assert_select 'input[max=99]'
   end
 
-  test 'input should infer step value only from integer attribute' do
+  test 'input should infer max value from attributes with less than validation using symbol' do
+    with_input_for @validating_user, :amount, :float
+    assert_no_select 'input[max]'
+
+    with_input_for @validating_user, :amount, :integer
+    assert_select 'input[max=99]'
+  end
+
+  test 'input should infer max value from attributes with less than or equal to validation using symbol' do
+    with_input_for @validating_user, :attempts, :float
+    assert_select 'input[max=100]'
+
+    with_input_for @validating_user, :attempts, :integer
+    assert_select 'input[max=100]'
+  end
+
+  test 'input should infer max value from attributes with less than validation using proc' do
+    with_input_for @other_validating_user, :amount, :float
+    assert_no_select 'input[max]'
+
+    with_input_for @other_validating_user, :amount, :integer
+    assert_select 'input[max=118]'
+  end
+
+  test 'input should infer max value from attributes with less than or equal to validation using proc' do
+    with_input_for @other_validating_user, :attempts, :float
+    assert_select 'input[max=119]'
+
+    with_input_for @other_validating_user, :attempts, :integer
+    assert_select 'input[max=119]'
+  end
+
+  test 'input should have step value of any except for integer attribute' do
     with_input_for @validating_user, :age, :float
-    assert_no_select 'input[step]'
+    assert_select 'input[step="any"]'
 
     with_input_for @validating_user, :age, :integer
     assert_select 'input[step=1]'
@@ -267,16 +351,6 @@ class InputTest < ActionView::TestCase
   test 'input should generate a text area for text attributes that accept placeholder' do
     with_input_for @user, :description, :text, :placeholder => 'Put in some text'
     assert_select 'textarea.text[placeholder=Put in some text]'
-  end
-
-  test 'input should generate a password field for password attributes' do
-    with_input_for @user, :password, :password
-    assert_select 'input[type=password].password#user_password'
-  end
-
-  test 'input should generate a password field for password attributes that accept placeholder' do
-    with_input_for @user, :password, :password, :placeholder => 'Password Confirmation'
-    assert_select 'input[type=password].password[placeholder=Password Confirmation]#user_password'
   end
 
   test 'input should generate a file field' do
@@ -463,6 +537,13 @@ class InputTest < ActionView::TestCase
     end
   end
 
+  test 'input should mark the checked value when using boolean and radios' do
+    @user.active = false
+    with_input_for @user, :active, :radio
+    assert_no_select 'input[type=radio][value=true][checked]'
+    assert_select 'input[type=radio][value=false][checked]'
+  end
+
   test 'input should generate a boolean select with options by default for select types' do
     with_input_for @user, :active, :select
     assert_select 'select.select#user_active'
@@ -495,6 +576,13 @@ class InputTest < ActionView::TestCase
     @user.age = 18
     with_input_for @user, :age, :select, :collection => 18..60
     assert_select 'select option[selected=selected]', '18'
+  end
+
+  test 'input should mark the selected value when using booleans and select' do
+    @user.active = false
+    with_input_for @user, :active, :select
+    assert_no_select 'select option[selected][value=true]', 'Yes'
+    assert_select 'select option[selected][value=false]', 'No'
   end
 
   test 'input should set the correct value when using a collection that includes floats' do

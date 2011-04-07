@@ -4,7 +4,6 @@ module SimpleForm
     class MappingInput < Base
       extend MapType
 
-      map_type :password, :to => :password_field
       map_type :text,     :to => :text_area
       map_type :file,     :to => :file_field
 
@@ -13,11 +12,6 @@ module SimpleForm
       end
 
     private
-
-      def input_method
-        self.class.mappings[input_type] or
-          raise("Could not find method for #{input_type.inspect}")
-      end
 
       def has_placeholder?
         (text? || password?) && placeholder_present?

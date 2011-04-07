@@ -4,7 +4,7 @@ module SimpleForm
       def input
         input_html_options[:type] ||= "number"
         input_html_options[:size] ||= SimpleForm.default_input_size
-        input_html_options[:step] ||= 1 if integer?
+        input_html_options[:step] ||= integer? ? 1 : "any"
         infer_attributes_from_validations!
         @builder.text_field(attribute_name, input_html_options)
       end
@@ -35,22 +35,30 @@ module SimpleForm
 
       def minimum_value(validator_options)
         if integer? && validator_options.key?(:greater_than)
-          validator_options[:greater_than] + 1
+          evaluate_validator_option(validator_options[:greater_than]) + 1
         else
-          validator_options[:greater_than_or_equal_to]
+          evaluate_validator_option(validator_options[:greater_than_or_equal_to])
         end
       end
 
       def maximum_value(validator_options)
         if integer? && validator_options.key?(:less_than)
-          validator_options[:less_than] - 1
+          evaluate_validator_option(validator_options[:less_than]) - 1
         else
-          validator_options[:less_than_or_equal_to]
+          evaluate_validator_option(validator_options[:less_than_or_equal_to])
         end
       end
 
       def find_numericality_validator
         attribute_validators.find { |v| ActiveModel::Validations::NumericalityValidator === v }
+      end
+
+      private
+
+      def evaluate_validator_option(option)
+        return option if option.is_a?(Numeric)
+        return object.send(option) if option.is_a?(Symbol)
+        return option.call(object) if option.respond_to?(:call)
       end
     end
   end
