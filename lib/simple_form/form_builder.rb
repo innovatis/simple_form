@@ -1,4 +1,4 @@
-require 'map_type'
+require 'simple_form/map_type'
 
 module SimpleForm
   class FormBuilder < ActionView::Helpers::FormBuilder
