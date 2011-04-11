@@ -1,3 +1,5 @@
+require 'simple_form/form_builder'
+
 module SimpleForm
   module ActionViewExtensions
     # This module creates simple form wrappers around default form_for and fields_for.
