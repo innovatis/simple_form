@@ -1,3 +1,5 @@
+require 'map_type'
+
 module SimpleForm
   class FormBuilder < ActionView::Helpers::FormBuilder
     attr_reader :template, :object_name, :object
