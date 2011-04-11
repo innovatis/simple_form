@@ -1,4 +1,5 @@
 module SimpleForm
+
   module Components
     autoload :Errors,       'simple_form/components/errors'
     autoload :Hints,        'simple_form/components/hints'

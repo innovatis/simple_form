@@ -1,6 +1,7 @@
 require 'simple_form/map_type'
 require 'simple_form/i18n_cache'
 require 'simple_form/inputs'
+require 'simple_form/components'
 
 module SimpleForm
   class FormBuilder < ActionView::Helpers::FormBuilder
