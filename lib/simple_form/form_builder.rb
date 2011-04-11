@@ -1,4 +1,5 @@
 require 'simple_form/map_type'
+require 'simple_form/i18n_cache'
 require 'simple_form/inputs'
 
 module SimpleForm
