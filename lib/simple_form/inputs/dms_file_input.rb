@@ -43,7 +43,7 @@ module SimpleForm
       def file_upload
         genid = (rand 2**32).to_s(16)
         if object.class.reflect_on_association(attribute_name).try(:macro) == :has_many
-          ul = AVB.render(:partial => (@options[:asset_list_partial] || '/inherited_resources/asset_list'), 
+          ul = AVB.render(:partial => (@options[:asset_list_partial] || 'asset_list'), 
             :locals => {:object => object, :attribute_name => attribute_name})
    
           "<div class='file_upload' id='#{genid}'>#{ul}</div>".html_safe
