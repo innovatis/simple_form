@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.rubyforge_project = "simple_form"
+  s.add_dependency "dms"
 end
