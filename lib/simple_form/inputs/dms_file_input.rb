@@ -38,7 +38,7 @@ module SimpleForm
         super + [:file_upload]
       end 
 
-      AVB = ActionView::Base.new(["#{Rails.root}/app/views"])
+      AVB = ActionView::Base.new(ActionController::Base.view_paths)
       
       def file_upload
         genid = (rand 2**32).to_s(16)
